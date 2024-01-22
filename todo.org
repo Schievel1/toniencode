@@ -1,0 +1,18 @@
+#+title: Todo
+
+* [ ] change the ogg comments on page 2
+:LOGBOOK:
+- State "[ ]"        from "[ ]"        [2024-01-22 Mon 12:36]
+:END:
+* [ ] use openssl lib to generate the sha1 instead
+:LOGBOOK:
+- State "[ ]"        from              [2024-01-22 Mon 12:37]
+:END:
+* [ ] get rid of error.h usage
+:LOGBOOK:
+- State "[ ]"        from              [2024-01-22 Mon 12:39]
+:END:
+* [ ] use libavcodec ffmpeg library instead of execing the binary
+:LOGBOOK:
+- State "[ ]"        from              [2024-01-22 Mon 12:42]
+:END:
