@@ -31,27 +31,22 @@ int main(int argc, char *argv[])
 
     if (argc > 1)
     {
-        const char *type = argv[1];
+       if (argc != 3 && argc != 4)
+       {
+           print_usage(argv);
+           return -1;
+       }
+       char *source = argv[1];
+       char *taf_file = argv[2];
+       size_t skip_seconds = 0;
+       if (argc == 4)
+       {
+           skip_seconds = atoi(argv[3]);
+       }
 
-        if (!strcasecmp(type, "ENCODE"))
-        {
-            if (argc != 4 && argc != 5)
-            {
-                eprintf("Usage: %s ENCODE <source> <taf_file> [skip_secondes]\r\n", argv[0]);
-                return -1;
-            }
-            char *source = argv[2];
-            char *taf_file = argv[3];
-            size_t skip_seconds = 0;
-            if (argc == 5)
-            {
-                skip_seconds = atoi(argv[4]);
-            }
+       ffmpeg_convert(source, taf_file, skip_seconds);
 
-            ffmpeg_convert(source, taf_file, skip_seconds);
-
-            return 1;
-        }
+       return 1;
     }
     print_usage(argv);
     return error;
@@ -60,8 +55,6 @@ int main(int argc, char *argv[])
 static void print_usage(char *argv[])
 {
     printf(
-        "Usage: %s [options]\n\n"
-        "Options:\n"
-        "  ENCODE <source> <taf_file> [skip_secondes]\r\n",
+        "Usage: %s <source> <taf_file> [skip_secondes]\r\n",
         argv[0]);
 }
