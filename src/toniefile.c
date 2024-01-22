@@ -262,7 +262,7 @@ error_t toniefile_write_header(toniefile_t *ctx)
     }
 
     fseek(ctx->file, 4, SEEK_SET);
-    if (fseek(ctx->file, buffer, proto_size) != NO_ERROR)
+    if (fwrite(buffer, sizeof(uint8_t), proto_size, ctx->file) != proto_size)
     {
         return ERROR_WRITE_FAILED;
     }
