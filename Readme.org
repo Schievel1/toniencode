@@ -1,0 +1,10 @@
+#+title: Readme
+
+
+* Dependencies
+| Dependency    | Gentoo package atom |
+|---------------+---------------------|
+| libopus       | dev-libs/libopusenc |
+| libogg        | dev-libs/libogg     |
+| libprotobuf-c | dev-libs/protobuf-c |
+| ffmpeg        | media-video/ffmpeg  |
