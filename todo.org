@@ -4,8 +4,10 @@
 :LOGBOOK:
 - State "[ ]"        from "[ ]"        [2024-01-22 Mon 12:36]
 :END:
-* [ ] use openssl lib to generate the sha1 instead
+* [X] use openssl lib to generate the sha1 instead
 :LOGBOOK:
+- State "[X]"        from "[ ]"        [2024-01-23 Tue 09:19] \\
+  Using ffmpegs libavutils instead because we depend on ffmpeg anyway
 - State "[ ]"        from              [2024-01-22 Mon 12:37]
 :END:
 * [ ] get rid of error.h usage

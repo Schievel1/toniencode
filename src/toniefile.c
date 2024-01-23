@@ -10,14 +10,16 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <libavutil/sha.h>
 
 #include "error.h"
 #include "toniefile.h"
-#include "sha1.h"
 #include "proto/toniebox.pb.taf-header.pb-c.h"
 
 #define CONTENT_LENGTH_MAX (INT32_MAX)
 #define TONIE_LENGTH_MAX (CONTENT_LENGTH_MAX - 0x1000)
+
+#define SHA1_DIGEST_SIZE (160)
 
 struct toniefile_s
 {
@@ -38,7 +40,7 @@ struct toniefile_s
 
     /* TAF */
     TonieboxAudioFileHeader taf;
-    Sha1Context sha1;
+    struct AVSHA* sha1;
     size_t taf_block_num;
 };
 
@@ -109,7 +111,8 @@ toniefile_t *toniefile_create(const char *fullPath, uint32_t audio_id)
     ctx->taf.num_bytes = TONIE_LENGTH_MAX;
     ctx->taf.n_track_page_nums = 0;
     ctx->taf.track_page_nums = malloc(sizeof(uint32_t) * TONIEFILE_MAX_CHAPTERS);
-    sha1Init(&ctx->sha1);
+    ctx->sha1 = av_sha_alloc();
+    av_sha_init(ctx->sha1, SHA1_DIGEST_SIZE);
     toniefile_new_chapter(ctx);
 
     /* open file */
@@ -228,8 +231,8 @@ toniefile_t *toniefile_create(const char *fullPath, uint32_t audio_id)
         ctx->file_pos += og.header_len + og.body_len;
         ctx->audio_length += og.header_len + og.body_len;
 
-        sha1Update(&ctx->sha1, og.header, og.header_len);
-        sha1Update(&ctx->sha1, og.body, og.body_len);
+        av_sha_update(ctx->sha1, og.header, og.header_len);
+        av_sha_update(ctx->sha1, og.body, og.body_len);
     }
 
     return ctx;
@@ -274,7 +277,7 @@ error_t toniefile_close(toniefile_t *ctx)
     ctx->taf.sha1_hash.data = malloc(SHA1_DIGEST_SIZE);
     ctx->taf.sha1_hash.len = SHA1_DIGEST_SIZE;
     ctx->taf.num_bytes = ctx->audio_length;
-    sha1Final(&ctx->sha1, ctx->taf.sha1_hash.data);
+    av_sha_final(ctx->sha1, ctx->taf.sha1_hash.data);
 
     error_t error = toniefile_write_header(ctx);
 
@@ -282,6 +285,7 @@ error_t toniefile_close(toniefile_t *ctx)
 
     free(ctx->taf.sha1_hash.data);
     free(ctx->taf.track_page_nums);
+    free(ctx->sha1);
     opus_encoder_destroy(ctx->enc);
     ogg_stream_clear(&ctx->os);
 
@@ -422,8 +426,8 @@ error_t toniefile_encode(toniefile_t *ctx, int16_t *sample_buffer, size_t sample
                     ctx->file_pos += og.header_len + og.body_len;
                     ctx->audio_length += og.header_len + og.body_len;
 
-                    sha1Update(&ctx->sha1, og.header, og.header_len);
-                    sha1Update(&ctx->sha1, og.body, og.body_len);
+                    av_sha_update(ctx->sha1, og.header, og.header_len);
+                    av_sha_update(ctx->sha1, og.body, og.body_len);
 
                     if ((prev / TONIEFILE_FRAME_SIZE) != (ctx->file_pos / TONIEFILE_FRAME_SIZE))
                     {

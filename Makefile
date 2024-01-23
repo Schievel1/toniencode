@@ -19,7 +19,7 @@ SOURCES = \
 CFLAGS += $(INCLUDES)
 CFLAGS += -Wno-error=stringop-overflow= -Wno-error=stringop-overread
 
-LDFLAGS += -lm -lopus -logg -lprotobuf-c
+LDFLAGS += -lm -lopus -logg -lprotobuf-c -lavutil
 
 PROTO_DIR := proto
 PROTO_GEN_DIR := src/proto
