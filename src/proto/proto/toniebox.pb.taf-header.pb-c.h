@@ -35,7 +35,7 @@ struct  TonieboxAudioFileHeader
 };
 #define TONIEBOX_AUDIO_FILE_HEADER__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&toniebox_audio_file_header__descriptor) \
-    , {0,NULL}, 0, 0, 0,NULL, {0,NULL} }
+, {0,NULL}, 0, 0, 0,NULL, {0,NULL} }
 
 
 /* TonieboxAudioFileHeader methods */

@@ -19,7 +19,7 @@
 #define CONTENT_LENGTH_MAX (INT32_MAX)
 #define TONIE_LENGTH_MAX (CONTENT_LENGTH_MAX - 0x1000)
 
-#define SHA1_DIGEST_SIZE (160)
+#define SHA1_DIGEST_SIZE (20)
 
 struct toniefile_s
 {
@@ -112,7 +112,7 @@ toniefile_t *toniefile_create(const char *fullPath, uint32_t audio_id)
     ctx->taf.n_track_page_nums = 0;
     ctx->taf.track_page_nums = malloc(sizeof(uint32_t) * TONIEFILE_MAX_CHAPTERS);
     ctx->sha1 = av_sha_alloc();
-    av_sha_init(ctx->sha1, SHA1_DIGEST_SIZE);
+    av_sha_init(ctx->sha1, SHA1_DIGEST_SIZE * 8); // needs size in bit instead of bytes
     toniefile_new_chapter(ctx);
 
     /* open file */
