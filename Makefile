@@ -1,4 +1,5 @@
 CC ?= gcc
+DEBUG ?= false
 
 INCLUDES = \
 	-Iinclude \
@@ -18,6 +19,10 @@ SOURCES = \
 
 CFLAGS += $(INCLUDES)
 CFLAGS += -Wno-error=stringop-overflow= -Wno-error=stringop-overread
+
+ifeq ($(DEBUG),true)
+	CFLAGS += -g -O0  # Add debug flags
+endif
 
 LDFLAGS += -lm -lopus -logg -lprotobuf-c -lavutil
 
